@@ -1,5 +1,6 @@
 <script setup>
 import { useField, useForm } from 'vee-validate';
+import { onMounted } from 'vue';
 import { useAuthStore } from '../stores/auth';
 import { loginSchema } from '../validations/login-schema';
 
@@ -8,7 +9,12 @@ const email = useField('email')
 const password = useField('password')
 const authStore = useAuthStore()
 
+onMounted(() => {
+  console.log(authStore.authUser)
+})
+
 const onSubmit = handleSubmit((values) => {
+  console.log(authStore.authUser)
   authStore.login({ email: values.email, password: values.password })
 })
 </script>
