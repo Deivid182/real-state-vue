@@ -13,11 +13,11 @@ export const useAuthStore = defineStore('auth', () => {
   const authUser = ref(null)
 
   onMounted(() => {
-    onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      unsubscribe()
       if (user) {
         authUser.value = user
-        console.log(authUser.value)
-        router.push('/')
+        //console.log(authUser.value)
       }
     })
   })

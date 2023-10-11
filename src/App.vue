@@ -26,7 +26,7 @@ import { useAuthStore } from './stores/auth';
         <template v-slot:append>
           <div v-if="authStore.isAuth">
             <v-btn
-              :to="{ name: 'home' }"
+              :to="{ name: 'properties' }"
               class="mr-4"
             >
               Admin
