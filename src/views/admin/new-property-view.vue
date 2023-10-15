@@ -32,6 +32,7 @@ const parking = useField('parking')
 const swimmingPool = useField('swimmingPool')
 
 const submit = handleSubmit(async (values) => {
+  // eslint-disable-next-line no-unused-vars
   const { image, ...rest } = values
 
   if (rest.swimmingPool === undefined) {
@@ -47,8 +48,6 @@ const submit = handleSubmit(async (values) => {
 const items = [1, 2, 3, 4, 5]
 </script>
 <template>
-  <h2 class="text-center text-h3 my-5 font-weight-bold">Admin Panel</h2>
-
   <v-card max-width="800" flat class="mx-auto">
     <v-card-title class="text-h4 px-0" tag="h4"> New Property </v-card-title>
     <v-card-subtitle class="text-h5 px-0 py-4" tag="h5">

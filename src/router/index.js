@@ -12,6 +12,11 @@ const router = createRouter({
       component: HomeView
     },
     {
+      path: '/properties/:id',
+      name: 'property',
+      component: () => import('../views/property-view.vue')
+    },
+    {
       path: '/login',
       name: 'login',
       component: () => import('../views/login-view.vue')
@@ -35,7 +40,7 @@ const router = createRouter({
           component: () => import('../views/admin/new-property-view.vue')
         },
         {
-          path: '/admin/edit-property',
+          path: '/admin/edit-property/:id',
           name: 'edit-property',
           component: () => import('../views/admin/edit-property-view.vue')
         }
