@@ -1,12 +1,12 @@
 import './assets/main.css'
 
+import '@mdi/font/css/materialdesignicons.css'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import 'vuetify/styles'
-import '@mdi/font/css/materialdesignicons.css'
 
 import { VueFire, VueFireAuth } from 'vuefire'
 import App from './App.vue'
