@@ -1,6 +1,19 @@
 <script setup>
-import { useField, useForm } from 'vee-validate';
-import { imageSchema, validationSchema } from '../../validations/property-schema';
+import { LMap, LMarker, LTileLayer } from '@vue-leaflet/vue-leaflet'
+import { addDoc, collection } from 'firebase/firestore'
+import 'leaflet/dist/leaflet.css'
+import { useField, useForm } from 'vee-validate'
+import { useRouter } from 'vue-router'
+import { useFirestore } from 'vuefire'
+import useImage from '../../composables/useImage'
+import useLocation from '../../composables/useLocation'
+import { imageSchema, validationSchema } from '../../validations/property-schema'
+
+const db = useFirestore()
+
+const router = useRouter()
+const { uploadImage, imageUrl, url } = useImage()
+const { zoom, center, onMove } = useLocation()
 
 const { handleSubmit } = useForm({
   validationSchema: {
@@ -18,8 +31,17 @@ const bathrooms = useField('bathrooms')
 const parking = useField('parking')
 const swimmingPool = useField('swimmingPool')
 
-const submit = handleSubmit((values) => {
-  console.log(values)
+const submit = handleSubmit(async (values) => {
+  const { image, ...rest } = values
+
+  if (rest.swimmingPool === undefined) {
+    rest.swimmingPool = false
+  }
+  const docRef = await addDoc(collection(db, 'properties'), { ...rest, image: url.value, location: center.value })
+
+  if (docRef.id) {
+    router.push({ name: 'properties' })
+  }
 })
 
 const items = [1, 2, 3, 4, 5]
@@ -48,7 +70,13 @@ const items = [1, 2, 3, 4, 5]
         class="mb-5"
         v-model="image.value.value"
         :error-messages="image.errorMessage.value"
+        @change="uploadImage"
       />
+
+      <div v-if="imageUrl">
+        <p>Image:</p>
+        <img class="w-50" :src="imageUrl" alt="property image" />
+      </div>
 
       <v-text-field
         class="mb-5"
@@ -96,13 +124,36 @@ const items = [1, 2, 3, 4, 5]
         label="Description"
       ></v-textarea>
 
-      <v-checkbox 
-        v-model="swimmingPool.value.value"
-        label="Swimming Pool" />
+      <v-checkbox v-model="swimmingPool.value.value" label="Swimming Pool" />
 
-      <v-btn 
-        @click="submit"
-        color="pink-accent-3" block> Add Property </v-btn>
+
+      <div class="pt-2 pb-6 map-container">
+        <h2>Location</h2>
+        <div style="height: 600px; width: 800px">
+          <LMap ref="map" v-model:zoom="zoom" :center="center" :use-global-leaflet="false">
+            <LMarker 
+              @moveend="onMove"
+              :lat-lng="center" 
+              draggable/>
+            <LTileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              layer-type="base"
+              name="OpenStreetMap"
+            ></LTileLayer>
+          </LMap>
+        </div>
+      </div>
+
+
+      <v-btn @click="submit" color="pink-accent-3" block> Add Property </v-btn>
     </v-form>
   </v-card>
 </template>
+
+<style>
+  .map-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+</style>
